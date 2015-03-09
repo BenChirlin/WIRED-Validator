@@ -1,0 +1,29 @@
+/**
+ * Custom styling aditions for admin
+*/
+
+.counter
+	position absolute
+	color #999
+	pointer-events none
+	transition color, 0.2s
+
+	&.error
+		color #A00
+
+#post
+	#titlewrap
+		.char-counter
+			@extend .counter
+			top 10px
+			right 10px
+
+	#postexcerpt .inside
+		.char-counter
+			@extend .counter
+			bottom 85px
+			right 35px
+
+	#titlediv
+		#title
+			padding-right 40px
