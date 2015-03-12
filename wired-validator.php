@@ -170,6 +170,13 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				'validator'
 			);
 			add_settings_field(
+				'title_validate',
+				'Validate Title?',
+				array( $this, 'title_validate_callback' ),
+				'writing',
+				'validator'
+			);
+			add_settings_field(
 				'title_min_options',
 				'Title Character Minimum',
 				array( $this, 'title_min_callback' ),
@@ -180,6 +187,13 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				'title_limit_options',
 				'Title Character Limit',
 				array( $this, 'title_limit_callback' ),
+				'writing',
+				'validator'
+			);
+			add_settings_field(
+				'excerpt_validate',
+				'Validate Excerpt?',
+				array( $this, 'excerpt_validate_callback' ),
 				'writing',
 				'validator'
 			);
@@ -198,9 +212,23 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				'validator'
 			);
 			add_settings_field(
+				'featured_validate',
+				'Validate Featured Image?',
+				array( $this, 'featured_validate_callback' ),
+				'writing',
+				'validator'
+			);
+			add_settings_field(
 				'featured_min_options',
 				'Featured Image Minimum Width',
 				array( $this, 'featured_min_callback' ),
+				'writing',
+				'validator'
+			);
+			add_settings_field(
+				'bio_validate',
+				'Validate Bios?',
+				array( $this, 'bio_validate_callback' ),
 				'writing',
 				'validator'
 			);
@@ -254,6 +282,20 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		}
 
 		/**
+		 * Output title validate checkbox
+		 *
+		 * @access public
+		 * @return null
+		 * @author Ben Chirlin
+		 */
+		public function title_validate_callback() {
+			$validator_options = $this->get_validator_options();
+			printf( '<input type="checkbox" id="title_validate" name="validator_options[title_validate]" value="checked" %s/>',
+			$validator_options && array_key_exists( 'title_validate', $validator_options ) ? esc_attr( $validator_options[ 'title_validate' ] ) : '' );
+			print( '<p class="description">Validate title lengths</p>' );
+		}
+
+		/**
 		 * Output title minimum field
 		 *
 		 * @access public
@@ -279,6 +321,20 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			printf( '<input type="text" id="title_limit" placeholder="i.e. 80" name="validator_options[title_limit]" value="%s" />',
 			$validator_options && array_key_exists( 'title_limit', $validator_options ) ? esc_attr( $validator_options[ 'title_limit' ] ) : '' );
 			print( '<p class="description">The maximum number of characters allowed in a post title.</p>' );
+		}
+
+		/**
+		 * Output excerpt validate checkbox
+		 *
+		 * @access public
+		 * @return null
+		 * @author Ben Chirlin
+		 */
+		public function excerpt_validate_callback() {
+			$validator_options = $this->get_validator_options();
+			printf( '<input type="checkbox" id="excerpt_validate" name="validator_options[excerpt_validate]" value="checked" %s />',
+			$validator_options && array_key_exists( 'excerpt_validate', $validator_options ) ? esc_attr( $validator_options[ 'excerpt_validate' ] ) : '' );
+			print( '<p class="description">Validate exceprt lengths</p>' );
 		}
 
 		/**
@@ -310,6 +366,20 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		}
 
 		/**
+		 * Output featured validate checkbox
+		 *
+		 * @access public
+		 * @return null
+		 * @author Ben Chirlin
+		 */
+		public function featured_validate_callback() {
+			$validator_options = $this->get_validator_options();
+			printf( '<input type="checkbox" id="featured_validate" name="validator_options[featured_validate]" value="checked" %s/>',
+			$validator_options && array_key_exists( 'featured_validate', $validator_options ) ? esc_attr( $validator_options[ 'featured_validate' ] ) : '' );
+			print( '<p class="description">Validate featured image widths</p>' );
+		}
+
+		/**
 		 * Output featrued minimum field
 		 *
 		 * @access public
@@ -321,6 +391,20 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			printf( '<input type="text" id="featured_min" placeholder="i.e. 1000" name="validator_options[featured_min]" value="%s" />',
 			$validator_options && array_key_exists( 'featured_min', $validator_options ) ? esc_attr( $validator_options[ 'featured_min' ] ) : '' );
 			print( '<p class="description">The minimum width of all posts\' full sized featured image.</p>' );
+		}
+
+		/**
+		 * Output bio validate checkbox
+		 *
+		 * @access public
+		 * @return null
+		 * @author Ben Chirlin
+		 */
+		public function bio_validate_callback() {
+			$validator_options = $this->get_validator_options();
+			printf( '<input type="checkbox" id="bio_validate" name="validator_options[bio_validate]" value="checked" %s/>',
+			$validator_options && array_key_exists( 'bio_validate', $validator_options ) ? esc_attr( $validator_options[ 'bio_validate' ] ) : '' );
+			print( '<p class="description">Validate bio lengths and profile image presense</p>' );
 		}
 
 		/**
@@ -347,14 +431,44 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		public function limit_validate_options( $validator_options ) {
 			// Store date
-			$validator_options[ 'valid_date' ] = intval( date( 'U', strtotime( $validator_options[ 'valid_date' ] ) ) );
+			if ( isset( $validator_options['valid_date'] ) ) {
+				$validator_options[ 'valid_date' ] = intval( date( 'U', strtotime( $validator_options[ 'valid_date' ] ) ) );
+			}
+
+			// Make all validation options either checked or empty
+			if ( isset( $validator_options['title_validate'] ) ) {
+				$validator_options[ 'title_validate' ] = 'checked' === $validator_options[ 'title_validate' ] ? 'checked' : '';
+			}
+			if ( isset( $validator_options['excerpt_validate'] ) ) {
+				$validator_options[ 'excerpt_validate' ] = 'checked' === $validator_options[ 'excerpt_validate' ] ? 'checked' : '';
+			}
+			if ( isset( $validator_options['featured_validate'] ) ) {
+				$validator_options[ 'featured_validate' ] = 'checked' === $validator_options[ 'featured_validate' ] ? 'checked' : '';
+			}
+			if ( isset( $validator_options['bio_validate'] ) ) {
+				$validator_options[ 'bio_validate' ] = 'checked' === $validator_options[ 'bio_validate' ] ? 'checked' : '';
+			}
+
 			// Get intval of all other inputs
-			$validator_options[ 'title_min' ] = intval( $validator_options[ 'title_min' ] );
-			$validator_options[ 'title_limit' ] = intval( $validator_options[ 'title_limit' ] );
-			$validator_options[ 'excerpt_min' ] = intval( $validator_options[ 'excerpt_min' ] );
-			$validator_options[ 'excerpt_limit' ] = intval( $validator_options[ 'excerpt_limit' ] );
-			$validator_options[ 'featured_min' ] = intval( $validator_options[ 'featured_min' ] );
-			$validator_options[ 'bio_min' ] = intval( $validator_options[ 'bio_min' ] );
+			if ( isset( $validator_options['title_min'] ) ) {
+				$validator_options[ 'title_min' ] = intval( $validator_options[ 'title_min' ] );
+			}
+			if ( isset( $validator_options['title_limit'] ) ) {
+				$validator_options[ 'title_limit' ] = intval( $validator_options[ 'title_limit' ] );
+			}
+			if ( isset( $validator_options['excerpt_min'] ) ) {
+				$validator_options[ 'excerpt_min' ] = intval( $validator_options[ 'excerpt_min' ] );
+			}
+			if ( isset( $validator_options['excerpt_limit'] ) ) {
+				$validator_options[ 'excerpt_limit' ] = intval( $validator_options[ 'excerpt_limit' ] );
+			}
+			if ( isset( $validator_options['featured_min'] ) ) {
+				$validator_options[ 'featured_min' ] = intval( $validator_options[ 'featured_min' ] );
+			}
+			if ( isset( $validator_options['bio_min'] ) ) {
+				$validator_options[ 'bio_min' ] = intval( $validator_options[ 'bio_min' ] );
+			}
+
 			return $validator_options;
 		}
 
@@ -401,18 +515,20 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			// Get validator options
 			$validator_options = $this->get_validator_options();
 
-			// Array to store our errors in
-			$errors = array();
+			if ( $validator_options[ 'featured_validate' ] ) {
+				// Array to store our errors in
+				$errors = array();
 
-			// Check featured image exists
-			if ( !has_post_thumbnail( $post_id ) ) {
-				$errors['no-thumbnail'] = 'There is no featured image attached to this post. Please add one that\'s at least ' . $validator_options['featured_min'] . 'px wide, full resolution jpegs are preferred.';
-			}
+				// Check featured image exists
+				if ( !has_post_thumbnail( $post_id ) ) {
+					$errors['no-thumbnail'] = 'There is no featured image attached to this post. Please add one that\'s at least ' . $validator_options['featured_min'] . 'px wide, full resolution jpegs are preferred.';
+				}
 
-			// Check featured image is the right width
-			$image_data = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'full' );
-			if ( $image_data && intval( $image_data[1] ) < $validator_options['featured_min'] ) {
-				$errors['bad-thumbnail'] = 'The featured image attached to this post is too small. Please add one that\'s at least ' . $validator_options['featured_min'] . 'px wide, full resolution jpegs are preferred.';
+				// Check featured image is the right width
+				$image_data = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'full' );
+				if ( $image_data && intval( $image_data[1] ) < $validator_options['featured_min'] ) {
+					$errors['bad-thumbnail'] = 'The featured image attached to this post is too small. Please add one that\'s at least ' . $validator_options['featured_min'] . 'px wide, full resolution jpegs are preferred.';
+				}
 			}
 
 			// Get fields requiring validation
@@ -421,41 +537,46 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			$the_excerpt = $the_post->post_excerpt;
 
 			// Validate title and excerpt lengths
-			if ( strlen( strip_tags( $the_title ) ) > $validator_options[ 'title_limit' ] ) {
-				$msg = 'Your title has exceeded the character limit.';
-				// If published, trim title excluding tags, else suggest the user do so before updating
-				if ( 'publish' === $the_post->post_status ) {
-					$msg .= ' Since this post is published, it has been trimmed from "<em>' . $the_title . '</em>".';
-					$modified_title = force_balance_tags( substr( $the_title, 0, $validator_options['title_limit'] ) );
-					remove_action( 'save_post', array( $this, 'validate_post' ) );
-					wp_update_post( array( 'ID' => $post_id, 'post_title' => $modified_title ) );
-					add_action( 'save_post', array( $this, 'validate_post') );
-					$errors['over-title-back'] = $msg;
-				} else {
-					$msg .= ' Please shorten it before you save or publish.';
-					$errors['over-title'] = $msg;
+			if ( $validator_options[ 'title_validate' ] ) {
+				if ( strlen( strip_tags( $the_title ) ) > $validator_options[ 'title_limit' ] ) {
+					$msg = 'Your title has exceeded the character limit.';
+					// If published, trim title excluding tags, else suggest the user do so before updating
+					if ( 'publish' === $the_post->post_status ) {
+						$msg .= ' Since this post is published, it has been trimmed from "<em>' . $the_title . '</em>".';
+						$modified_title = force_balance_tags( substr( $the_title, 0, $validator_options['title_limit'] ) );
+						remove_action( 'save_post', array( $this, 'validate_post' ) );
+						wp_update_post( array( 'ID' => $post_id, 'post_title' => $modified_title ) );
+						add_action( 'save_post', array( $this, 'validate_post') );
+						$errors['over-title-back'] = $msg;
+					} else {
+						$msg .= ' Please shorten it before you save or publish.';
+						$errors['over-title'] = $msg;
+					}
+				} else if ( strlen( strip_tags( $the_title ) ) < $validator_options[ 'title_min' ] ) {
+					// Warn user title is under min
+					$errors['under-title'] = 'Your title is below the character minimum. Please lengthen it before updating this post.';
 				}
-			} else if ( strlen( strip_tags( $the_title ) ) < $validator_options[ 'title_min' ] ) {
-				// Warn user title is under min
-				$errors['under-title'] = 'Your title is below the character minimum. Please lengthen it before updating this post.';
 			}
-			if ( strlen( strip_tags( $the_excerpt ) ) > $validator_options[ 'excerpt_limit' ] ) {
-				$msg = 'Your excerpt has exceeded the character limit.';
-				// If published, trim excerpt excluding tags, else suggest the user do so before updating
-				if ( 'publish' === $the_post->post_status ) {
-					$msg .= ' Since this post is published, it has been trimmed from "<em>' . $the_excerpt . '</em>".';
-					$modified_excerpt = force_balance_tags( substr( $the_excerpt, 0, $validator_options['excerpt_limit'] ) );
-					remove_action( 'save_post', array( $this, 'validate_post' ) );
-					wp_update_post( array( 'ID' => $post_id, 'post_excerpt' => $modified_excerpt ) );
-					add_action( 'save_post', array( $this, 'validate_post') );
-					$errors['over-excerpt-back'] = $msg;
-				} else {
-					$msg .= ' Please shorten it before you save or publish.';
-					$errors['over-excerpt'] = $msg;
+
+			if ( $validator_options[ 'excerpt_validate' ] ) {
+				if ( strlen( strip_tags( $the_excerpt ) ) > $validator_options[ 'excerpt_limit' ] ) {
+					$msg = 'Your excerpt has exceeded the character limit.';
+					// If published, trim excerpt excluding tags, else suggest the user do so before updating
+					if ( 'publish' === $the_post->post_status ) {
+						$msg .= ' Since this post is published, it has been trimmed from "<em>' . $the_excerpt . '</em>".';
+						$modified_excerpt = force_balance_tags( substr( $the_excerpt, 0, $validator_options['excerpt_limit'] ) );
+						remove_action( 'save_post', array( $this, 'validate_post' ) );
+						wp_update_post( array( 'ID' => $post_id, 'post_excerpt' => $modified_excerpt ) );
+						add_action( 'save_post', array( $this, 'validate_post') );
+						$errors['over-excerpt-back'] = $msg;
+					} else {
+						$msg .= ' Please shorten it before you save or publish.';
+						$errors['over-excerpt'] = $msg;
+					}
+				} else if ( strlen( strip_tags( $the_excerpt ) ) < $validator_options[ 'excerpt_min' ] ) {
+					// Warn user excerpt is under min
+					$errors['under-excerpt'] = 'Your excerpt is below the character minimum. Please lengthen it before updating this post.';
 				}
-			} else if ( strlen( strip_tags( $the_excerpt ) ) < $validator_options[ 'excerpt_min' ] ) {
-				// Warn user excerpt is under min
-				$errors['under-excerpt'] = 'Your excerpt is below the character minimum. Please lengthen it before updating this post.';
 			}
 
 			// Set post meta with errors if any exist, else remove meta
@@ -513,26 +634,28 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			// Get validator options
 			$validator_options = $this->get_validator_options();
 
-			// Array to store our errors in
-			$errors = array();
+			if ( 'checked' === $validator_options[ 'bio_validate' ] ) {
+				// Array to store our errors in
+				$errors = array();
 
-			// Get fields requiring validation
-			$user_bio = get_user_meta( $user_id, 'shortbio', true );
-			$user_img = get_user_meta( $user_id, 'image', true );
+				// Get fields requiring validation
+				$user_bio = get_user_meta( $user_id, 'shortbio', true );
+				$user_img = get_user_meta( $user_id, 'image', true );
 
-			if ( $user_bio && strlen( strip_tags( $user_bio ) ) < $validator_options[ 'bio_min' ] ) {
-				$errors['under-bio'] = 'This profile\'s short biography is below the character minimum. Please lengthen it and update the profile again.';
-			}
+				if ( $user_bio && strlen( strip_tags( $user_bio ) ) < $validator_options[ 'bio_min' ] ) {
+					$errors['under-bio'] = 'This profile\'s short biography is below the character minimum. Please lengthen it and update the profile again.';
+				}
 
-			if ( !$user_bio || empty( $user_img )  ) {
-				$errors['user-img'] = "Please add a profile image to complete this profile.";
-			}
+				if ( !$user_bio || empty( $user_img )  ) {
+					$errors['user-img'] = "Please add a profile image to complete this profile.";
+				}
 
-			// Set post meta with errors if any exist, else remove meta
-			if ( !empty ( $errors ) ) {
-				update_user_meta( $user_id, 'validator', $errors );
-			} else {
-				delete_user_meta( $user_id, 'validator' );
+				// Set post meta with errors if any exist, else remove meta
+				if ( !empty ( $errors ) ) {
+					update_user_meta( $user_id, 'validator', $errors );
+				} else {
+					delete_user_meta( $user_id, 'validator' );
+				}
 			}
 		}
 
@@ -595,12 +718,16 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		private function get_validator_options() {
 			return get_option( 'validator_options', array(
+				'title_validate' => '',
 				'title_min' => 20,
 				'title_limit' => 80,
+				'excerpt_validate' => '',
 				'excerpt_min' => 40,
 				'excerpt_limit' => 140,
+				'featured_validate' => '',
 				'featured_min' => 1000,
-				'bio_min' => 140
+				'bio_validate' => '',
+				'bio_min' => 140,
 			) );
 		}
 

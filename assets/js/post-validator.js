@@ -44,36 +44,45 @@
 
 	$(document).ready(function() {
 		// Default JS limits for title and excerpt length on posts for cards
+		var titleValidate = false;
 		var titleMin = 20;
 		var titleLimit = 80;
+		var excerptValidate = false;
 		var excerptMin = 40;
 		var excerptLimit = 140;
 
 		// Check for limits options from wp_localize_script in admin.php
 		if ( limitopts ) {
+			titleValidate = 'checked' === limitopts.title_validate ? true : false;
 			titleMin = limitopts.title_min;
 			titleLimit = limitopts.title_limit;
+			excerptValidate = 'checked' === limitopts.excerpt_validate ? true : false;
 			excerptMin = limitopts.excerpt_min;
 			excerptLimit = limitopts.excerpt_limit;
 		}
 
 		if ( $( '#post' ).length ) {
-			$( '#titlewrap' ).append('<span class="char-counter">' + titleLimit + '</span>');
-			$( '#postexcerpt .inside' ).append('<span class="char-counter">' + excerptLimit + '</span>');
-
 			// Update length count on title
 			// Check on load, then on every keypress
-			checkLength( '#titlediv #title', '#titlewrap', titleMin, titleLimit, 'title' );
-			$( '#titlediv #title' ).on( 'input', function() {
-				checkLength( this, '#titlewrap', titleMin, titleLimit, 'title' );
-			} );
+			if ( titleValidate ) {
+				$( '#titlewrap' ).append('<span class="char-counter">' + titleLimit + '</span>');
+
+				checkLength( '#titlediv #title', '#titlewrap', titleMin, titleLimit, 'title' );
+				$( '#titlediv #title' ).on( 'input', function() {
+					checkLength( this, '#titlewrap', titleMin, titleLimit, 'title' );
+				} );
+			}
 
 			// Update length count on excerpt
 			// Check on load, then on every keypress
-			checkLength( '#postexcerpt #excerpt', '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
-			$( '#postexcerpt #excerpt' ).on( 'input', function() {
-				checkLength( this, '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
-			} );
+			if ( excerptValidate ) {
+				$( '#postexcerpt .inside' ).append('<span class="char-counter">' + excerptLimit + '</span>');
+
+				checkLength( '#postexcerpt #excerpt', '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
+				$( '#postexcerpt #excerpt' ).on( 'input', function() {
+					checkLength( this, '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
+				} );
+			}
 		}
 	});
 })(jQuery);

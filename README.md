@@ -1,8 +1,17 @@
 # WIRED Validator
 
-Wordpress post title and exceprt validator developed for WIRED, now available to the public! Adds Twitter-style validation for minimum and maximum lengths for your posts titles and excerpt. A counter in each field will indicate how many characters user has left to type, turning when red when there are too few or too many. Also adds minimum length checking on user bios on user update. Lastly adds recommended image minimum width for featured images in posts.
+Wordpress post title and exceprt validator developed for WIRED, now available to the public! Validated fields are limited to:
 
-~NOTE:~ No validation in this plugin is "hard" validation. In other words this plugin simply warns a user if they've not met one of the validation rules. In the case of post titles and excerpts this happens in real time via the counter. Other fields simply output a warning in the messages area of the dashboard (at the top of the screen).
+* Post titles and excerpts: Twitter-style validation for minimum and maximum lengths (A counter in each field will indicate how many characters the user has left to type, turning red and preventing save/publish when there are too few or too many)
+* Profile pages: Minimum bio length checking and checks for user profile image on save
+* Post featured image: Checks for featured image and validates said image meets minimum width (also adds help text to box)
+
+**NOTE:** No validation in this plugin is "hard" validation. In other words this plugin simply warns a user if they've not met one of the validation rules. In the case of post titles and excerpts this happens in real time via the counter but will also disable the save/publish button till any invalid fields are resolved. These fields and all other fields output warnings in the messages area of the dashboard (at the top of the screen) after save.
 
 ## Adjusting Settings
-This plugin adds a custom setting page once enabled which allows you to override the default minimum/maximum settings for title and exceprt (20/80 and 40/140 respecitvely). User bio minimum is 140 by default while featured image minimum width recomendation defaults to 1000px.
+This plugin adds a custom setting page once enabled which allows you to override the default validation settings, including enabling the plugin feature by feature. You can also alter the min/max validation values. By default these are as follows (min/max):
+
+* Title - 20/80
+* Exceprt - 40/140
+* User bio - 140
+* Featured image width - 1000px
