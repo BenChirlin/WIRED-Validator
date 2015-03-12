@@ -135,8 +135,8 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				$current_post_type = $screen->post_type;
 			}
 
-			if ( $current_post_type === 'post' ) {
-				$validator_options = $this->get_validator_options();
+			$validator_options = $this->get_validator_options();
+			if ( 'checked' === $validator_options[ 'featured_validate' ] && $current_post_type === 'post' ) {
 				$content .= '<em>Minimum recommended width ' . $validator_options['featured_min'] . 'px</em><br/><em>Full resolution jpegs are preferred</em>';
 			}
 			return $content;
@@ -646,7 +646,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 					$errors['under-bio'] = 'This profile\'s short biography is below the character minimum. Please lengthen it and update the profile again.';
 				}
 
-				if ( !$user_bio || empty( $user_img )  ) {
+				if ( !$user_img || empty( $user_img )  ) {
 					$errors['user-img'] = "Please add a profile image to complete this profile.";
 				}
 
@@ -671,10 +671,10 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			global $post;
 
 			$errors = array();
+			$validator_options = $this->get_validator_options();
 
 			if ( is_admin() && ( $pagenow === 'post.php' || get_post_type() === 'post' ) ) {
 				// Check post has valid date
-				$validator_options = $this->get_validator_options();
 				$on_date = $validator_options && array_key_exists( 'valid_date', $validator_options ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
 				$post_date = get_the_date( 'U' );
 
@@ -702,7 +702,42 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 
 			if ( !empty( $errors ) ) {
 				foreach ( $errors as $label => $error ) {
-					echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+					// Switch on error label, check if that error validation is enabled
+					switch ( $label ) {
+						case 'no-thumbnail':
+						case 'bad-thumbnail':
+							// Featured
+							if ( isset( $validator_options[ 'featured_validate' ] ) && $validator_options[ 'featured_validate' ] ) {
+								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+							}
+							break;
+						case 'under-bio':
+						case 'user-img':
+							// Bio
+							if ( isset( $validator_options[ 'bio_validate' ] ) && $validator_options[ 'bio_validate' ] ) {
+								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+							}
+							break;
+						case 'over-title-back':
+						case 'over-title':
+						case 'under-title':
+							// Title
+							if ( isset( $validator_options[ 'title_validate' ] ) && $validator_options[ 'title_validate' ] ) {
+								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+							}
+							break;
+						case 'over-excerpt-back':
+						case 'over-excerpt':
+						case 'under-excerpt':
+							// Excerpt
+							if ( isset( $validator_options[ 'excerpt_validate' ] ) && $validator_options[ 'excerpt_validate' ] ) {
+								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+							}
+							break;
+						default:
+							// Default to showing error
+							echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
+					}
 				}
 			}
 
