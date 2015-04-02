@@ -53,10 +53,10 @@
 
 		// Check for limits options from wp_localize_script in admin.php
 		if ( limitopts ) {
-			titleValidate = 'checked' === limitopts.title_validate ? true : false;
+			titleValidate = 1 === parseInt( limitopts.title_validate ) ? true : false;
 			titleMin = limitopts.title_min;
 			titleLimit = limitopts.title_limit;
-			excerptValidate = 'checked' === limitopts.excerpt_validate ? true : false;
+			excerptValidate = 1 === parseInt( limitopts.excerpt_validate ) ? true : false;
 			excerptMin = limitopts.excerpt_min;
 			excerptLimit = limitopts.excerpt_limit;
 		}
@@ -67,7 +67,10 @@
 			if ( titleValidate ) {
 				$( '#titlewrap' ).append('<span class="char-counter">' + titleLimit + '</span>');
 
-				checkLength( '#titlediv #title', '#titlewrap', titleMin, titleLimit, 'title' );
+				// Only check on load if not new page
+				if ( $( '.post-new-php' ).length === 0 ) {
+					checkLength( '#titlediv #title', '#titlewrap', titleMin, titleLimit, 'title' );
+				}
 				$( '#titlediv #title' ).on( 'input', function() {
 					checkLength( this, '#titlewrap', titleMin, titleLimit, 'title' );
 				} );
@@ -78,7 +81,10 @@
 			if ( excerptValidate ) {
 				$( '#postexcerpt .inside' ).append('<span class="char-counter">' + excerptLimit + '</span>');
 
-				checkLength( '#postexcerpt #excerpt', '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
+				// Only check on load if not new page
+				if ( $( '.post-new-php' ).length === 0 ) {
+					checkLength( '#postexcerpt #excerpt', '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' )
+				};
 				$( '#postexcerpt #excerpt' ).on( 'input', function() {
 					checkLength( this, '#postexcerpt .inside', excerptMin, excerptLimit, 'excerpt' );
 				} );

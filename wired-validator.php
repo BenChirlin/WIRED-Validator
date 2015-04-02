@@ -76,7 +76,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				}
 
 				$validator_options = $this->get_validator_options();
-				$on_date = $validator_options && array_key_exists( 'valid_date', $validator_options ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
+				$on_date = $validator_options && isset( $validator_options[ 'valid_date' ] ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
 				$post_date = get_the_date( 'U' );
 
 				if ( $post_date >= $on_date ) {
@@ -122,7 +122,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				parse_str( $query, $query_array );
 
 				//get the post_type querystring value
-				if ( array_key_exists( 'post_type', $query_array ) ) {
+				if ( isset( $query_array[ 'post_type' ] ) ) {
 					$current_post_type = $query_array['post_type'];
 				} else {
 					$current_post_type = 'post';
@@ -136,7 +136,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			}
 
 			$validator_options = $this->get_validator_options();
-			if ( 'checked' === $validator_options[ 'featured_validate' ] && $current_post_type === 'post' ) {
+			if ( isset( $validator_options[ 'featured_validate' ] ) && 1 === intval( $validator_options[ 'featured_validate' ] ) && $current_post_type === 'post' ) {
 				$content .= '<em>Minimum recommended width ' . $validator_options['featured_min'] . 'px</em><br/><em>Full resolution jpegs are preferred</em>';
 			}
 			return $content;
@@ -277,7 +277,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function valid_date_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="valid_date" placeholder="i.e. 2014/01/31" name="validator_options[valid_date]" value="%s" />',
-			$validator_options && array_key_exists( 'valid_date', $validator_options ) ? date( 'Y/m/d', esc_attr( intval( $validator_options[ 'valid_date' ] ) ) ) : '' );
+			$validator_options && isset( $validator_options[ 'valid_date' ] ) ? date( 'Y/m/d', esc_attr( intval( $validator_options[ 'valid_date' ] ) ) ) : '' );
 			print( '<p class="description">Post publish date after which to validate posts (prevents retroactive validation).</p>' );
 		}
 
@@ -290,8 +290,8 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		public function title_validate_callback() {
 			$validator_options = $this->get_validator_options();
-			printf( '<input type="checkbox" id="title_validate" name="validator_options[title_validate]" value="checked" %s/>',
-			$validator_options && array_key_exists( 'title_validate', $validator_options ) ? esc_attr( $validator_options[ 'title_validate' ] ) : '' );
+			printf( '<input type="checkbox" id="title_validate" name="validator_options[title_validate]" value="1" %s/>',
+			$validator_options && isset( $validator_options[ 'title_validate' ] ) && 1 === $validator_options[ 'title_validate' ] ? 'checked' : '' );
 			print( '<p class="description">Validate title lengths</p>' );
 		}
 
@@ -305,7 +305,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function title_min_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="title_min" placeholder="i.e. 20" name="validator_options[title_min]" value="%s" />',
-			$validator_options && array_key_exists( 'title_min', $validator_options ) ? esc_attr( $validator_options[ 'title_min' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'title_min' ] ) ? esc_attr( $validator_options[ 'title_min' ] ) : '' );
 			print( '<p class="description">The minimum number of characters required in a post title.</p>' );
 		}
 
@@ -319,7 +319,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function title_limit_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="title_limit" placeholder="i.e. 80" name="validator_options[title_limit]" value="%s" />',
-			$validator_options && array_key_exists( 'title_limit', $validator_options ) ? esc_attr( $validator_options[ 'title_limit' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'title_limit' ] ) ? esc_attr( $validator_options[ 'title_limit' ] ) : '' );
 			print( '<p class="description">The maximum number of characters allowed in a post title.</p>' );
 		}
 
@@ -332,8 +332,8 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		public function excerpt_validate_callback() {
 			$validator_options = $this->get_validator_options();
-			printf( '<input type="checkbox" id="excerpt_validate" name="validator_options[excerpt_validate]" value="checked" %s />',
-			$validator_options && array_key_exists( 'excerpt_validate', $validator_options ) ? esc_attr( $validator_options[ 'excerpt_validate' ] ) : '' );
+			printf( '<input type="checkbox" id="excerpt_validate" name="validator_options[excerpt_validate]" value="1" %s />',
+			$validator_options && isset( $validator_options[ 'excerpt_validate' ] ) && 1 === $validator_options[ 'excerpt_validate' ] ? 'checked' : '' );
 			print( '<p class="description">Validate exceprt lengths</p>' );
 		}
 
@@ -347,7 +347,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function excerpt_min_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="excerpt_min" placeholder="i.e. 140" name="validator_options[excerpt_min]" value="%s" />',
-			$validator_options && array_key_exists( 'excerpt_min', $validator_options ) ? esc_attr( $validator_options[ 'excerpt_min' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'excerpt_min' ] ) ? esc_attr( $validator_options[ 'excerpt_min' ] ) : '' );
 			print( '<p class="description">The minimum number of characters required in a post excerpt.</p>' );
 		}
 
@@ -361,7 +361,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function excerpt_limit_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="excerpt_limit" placeholder="i.e. 140" name="validator_options[excerpt_limit]" value="%s" />',
-			$validator_options && array_key_exists( 'excerpt_limit', $validator_options ) ? esc_attr( $validator_options[ 'excerpt_limit' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'excerpt_limit' ] ) ? esc_attr( $validator_options[ 'excerpt_limit' ] ) : '' );
 			print( '<p class="description">The maximum number of characters allowed in a post excerpt.</p>' );
 		}
 
@@ -374,8 +374,8 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		public function featured_validate_callback() {
 			$validator_options = $this->get_validator_options();
-			printf( '<input type="checkbox" id="featured_validate" name="validator_options[featured_validate]" value="checked" %s/>',
-			$validator_options && array_key_exists( 'featured_validate', $validator_options ) ? esc_attr( $validator_options[ 'featured_validate' ] ) : '' );
+			printf( '<input type="checkbox" id="featured_validate" name="validator_options[featured_validate]" value="1" %s/>',
+			$validator_options && isset( $validator_options[ 'featured_validate' ] ) && 1 === $validator_options[ 'featured_validate' ] ? 'checked' : '' );
 			print( '<p class="description">Validate featured image widths</p>' );
 		}
 
@@ -389,7 +389,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function featured_min_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="featured_min" placeholder="i.e. 1000" name="validator_options[featured_min]" value="%s" />',
-			$validator_options && array_key_exists( 'featured_min', $validator_options ) ? esc_attr( $validator_options[ 'featured_min' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'featured_min' ] ) ? esc_attr( $validator_options[ 'featured_min' ] ) : '' );
 			print( '<p class="description">The minimum width of all posts\' full sized featured image.</p>' );
 		}
 
@@ -402,8 +402,8 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		public function bio_validate_callback() {
 			$validator_options = $this->get_validator_options();
-			printf( '<input type="checkbox" id="bio_validate" name="validator_options[bio_validate]" value="checked" %s/>',
-			$validator_options && array_key_exists( 'bio_validate', $validator_options ) ? esc_attr( $validator_options[ 'bio_validate' ] ) : '' );
+			printf( '<input type="checkbox" id="bio_validate" name="validator_options[bio_validate]" value="1" %s/>',
+			$validator_options && isset( $validator_options[ 'bio_validate' ] ) && 1 === $validator_options[ 'bio_validate' ] ? 'checked' : '' );
 			print( '<p class="description">Validate bio lengths and profile image presense</p>' );
 		}
 
@@ -417,7 +417,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function bio_min_callback() {
 			$validator_options = $this->get_validator_options();
 			printf( '<input type="text" id="bio_min" placeholder="i.e. 140" name="validator_options[bio_min]" value="%s" />',
-			$validator_options && array_key_exists( 'bio_min', $validator_options ) ? esc_attr( $validator_options[ 'bio_min' ] ) : '' );
+			$validator_options && isset( $validator_options[ 'bio_min' ] ) ? esc_attr( $validator_options[ 'bio_min' ] ) : '' );
 			print( '<p class="description">The minimum number of characters required in a user biography.</p>' );
 		}
 
@@ -437,36 +437,44 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 
 			// Make all validation options either checked or empty
 			if ( isset( $validator_options['title_validate'] ) ) {
-				$validator_options[ 'title_validate' ] = 'checked' === $validator_options[ 'title_validate' ] ? 'checked' : '';
+				$validator_options[ 'title_validate' ] = intval( $validator_options[ 'title_validate' ] );
+			} else {
+				$validator_options[ 'title_validate' ] = 0;
 			}
 			if ( isset( $validator_options['excerpt_validate'] ) ) {
-				$validator_options[ 'excerpt_validate' ] = 'checked' === $validator_options[ 'excerpt_validate' ] ? 'checked' : '';
+				$validator_options[ 'excerpt_validate' ] = intval( $validator_options[ 'excerpt_validate' ] );
+			} else {
+				$validator_options[ 'excerpt_validate' ] = 0;
 			}
 			if ( isset( $validator_options['featured_validate'] ) ) {
-				$validator_options[ 'featured_validate' ] = 'checked' === $validator_options[ 'featured_validate' ] ? 'checked' : '';
+				$validator_options[ 'featured_validate' ] = intval( $validator_options[ 'featured_validate' ] );
+			} else {
+				$validator_options[ 'featured_validate' ] = 0;
 			}
 			if ( isset( $validator_options['bio_validate'] ) ) {
-				$validator_options[ 'bio_validate' ] = 'checked' === $validator_options[ 'bio_validate' ] ? 'checked' : '';
+				$validator_options[ 'bio_validate' ] = intval( $validator_options[ 'bio_validate' ] );
+			} else {
+				$validator_options[ 'bio_validate' ] = 0;
 			}
 
 			// Get intval of all other inputs
 			if ( isset( $validator_options['title_min'] ) ) {
-				$validator_options[ 'title_min' ] = intval( $validator_options[ 'title_min' ] );
+				$validator_options[ 'title_min' ] = absint( $validator_options[ 'title_min' ] );
 			}
 			if ( isset( $validator_options['title_limit'] ) ) {
-				$validator_options[ 'title_limit' ] = intval( $validator_options[ 'title_limit' ] );
+				$validator_options[ 'title_limit' ] = absint( $validator_options[ 'title_limit' ] );
 			}
 			if ( isset( $validator_options['excerpt_min'] ) ) {
-				$validator_options[ 'excerpt_min' ] = intval( $validator_options[ 'excerpt_min' ] );
+				$validator_options[ 'excerpt_min' ] = absint( $validator_options[ 'excerpt_min' ] );
 			}
 			if ( isset( $validator_options['excerpt_limit'] ) ) {
-				$validator_options[ 'excerpt_limit' ] = intval( $validator_options[ 'excerpt_limit' ] );
+				$validator_options[ 'excerpt_limit' ] = absint( $validator_options[ 'excerpt_limit' ] );
 			}
 			if ( isset( $validator_options['featured_min'] ) ) {
-				$validator_options[ 'featured_min' ] = intval( $validator_options[ 'featured_min' ] );
+				$validator_options[ 'featured_min' ] = absint( $validator_options[ 'featured_min' ] );
 			}
 			if ( isset( $validator_options['bio_min'] ) ) {
-				$validator_options[ 'bio_min' ] = intval( $validator_options[ 'bio_min' ] );
+				$validator_options[ 'bio_min' ] = absint( $validator_options[ 'bio_min' ] );
 			}
 
 			return $validator_options;
@@ -515,7 +523,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			// Get validator options
 			$validator_options = $this->get_validator_options();
 
-			if ( $validator_options[ 'featured_validate' ] ) {
+			if ( 1 == intval( $validator_options[ 'featured_validate' ] ) ) {
 				// Array to store our errors in
 				$errors = array();
 
@@ -537,7 +545,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			$the_excerpt = $the_post->post_excerpt;
 
 			// Validate title and excerpt lengths
-			if ( $validator_options[ 'title_validate' ] ) {
+			if ( 1 === intval( $validator_options[ 'title_validate' ] ) ) {
 				if ( strlen( strip_tags( $the_title ) ) > $validator_options[ 'title_limit' ] ) {
 					$msg = 'Your title has exceeded the character limit.';
 					// If published, trim title excluding tags, else suggest the user do so before updating
@@ -558,7 +566,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 				}
 			}
 
-			if ( $validator_options[ 'excerpt_validate' ] ) {
+			if ( 1 === intval( $validator_options[ 'excerpt_validate' ] ) ) {
 				if ( strlen( strip_tags( $the_excerpt ) ) > $validator_options[ 'excerpt_limit' ] ) {
 					$msg = 'Your excerpt has exceeded the character limit.';
 					// If published, trim excerpt excluding tags, else suggest the user do so before updating
@@ -611,11 +619,11 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		public function validate_profile( $user_id ) {
 			// Check permissions
 			if ( false === current_user_can( 'edit_user', $user_id ) ) {
-				return false;
+				return;
 			}
 
 			if ( false === check_admin_referer( 'update-user_' . $user_id ) ) {
-				return false;
+				return;
 			}
 
 			// Check nonce
@@ -634,12 +642,12 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			// Get validator options
 			$validator_options = $this->get_validator_options();
 
-			if ( 'checked' === $validator_options[ 'bio_validate' ] ) {
+			if ( 1 === intval( $validator_options[ 'bio_validate' ] ) ) {
 				// Array to store our errors in
 				$errors = array();
 
 				// Get fields requiring validation
-				$user_bio = get_user_meta( $user_id, 'shortbio', true );
+				$user_bio = get_user_meta( $user_id, 'description', true );
 				$user_img = get_user_meta( $user_id, 'image', true );
 
 				if ( $user_bio && strlen( strip_tags( $user_bio ) ) < $validator_options[ 'bio_min' ] ) {
@@ -673,9 +681,9 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 			$errors = array();
 			$validator_options = $this->get_validator_options();
 
-			if ( is_admin() && ( $pagenow === 'post.php' || get_post_type() === 'post' ) ) {
+			if ( is_admin() && ( $pagenow === 'post.php' || get_post_type() === 'post' ) && !in_array( $pagenow, array( 'post-new.php' ) ) ) {
 				// Check post has valid date
-				$on_date = $validator_options && array_key_exists( 'valid_date', $validator_options ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
+				$on_date = $validator_options && isset( $validator_options[ 'valid_date' ] ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
 				$post_date = get_the_date( 'U' );
 
 				if ( $post_date >= $on_date ) {
@@ -707,14 +715,14 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 						case 'no-thumbnail':
 						case 'bad-thumbnail':
 							// Featured
-							if ( isset( $validator_options[ 'featured_validate' ] ) && $validator_options[ 'featured_validate' ] ) {
+							if ( isset( $validator_options[ 'featured_validate' ] ) && 1 === intval( $validator_options[ 'featured_validate' ] ) ) {
 								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
 							}
 							break;
 						case 'under-bio':
 						case 'user-img':
 							// Bio
-							if ( isset( $validator_options[ 'bio_validate' ] ) && $validator_options[ 'bio_validate' ] ) {
+							if ( isset( $validator_options[ 'bio_validate' ] ) && 1 === intval( $validator_options[ 'bio_validate' ] ) ) {
 								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
 							}
 							break;
@@ -722,7 +730,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 						case 'over-title':
 						case 'under-title':
 							// Title
-							if ( isset( $validator_options[ 'title_validate' ] ) && $validator_options[ 'title_validate' ] ) {
+							if ( isset( $validator_options[ 'title_validate' ] ) && 1 === intval( $validator_options[ 'title_validate' ] ) ) {
 								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
 							}
 							break;
@@ -730,7 +738,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 						case 'over-excerpt':
 						case 'under-excerpt':
 							// Excerpt
-							if ( isset( $validator_options[ 'excerpt_validate' ] ) && $validator_options[ 'excerpt_validate' ] ) {
+							if ( isset( $validator_options[ 'excerpt_validate' ] ) && 1 === intval( $validator_options[ 'excerpt_validate' ] ) ) {
 								echo '<div class="error ' . $label . '" id="notice"><p>' . $error . '</p></div>';
 							}
 							break;
@@ -752,18 +760,23 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 * @author Ben Chirlin
 		 */
 		private function get_validator_options() {
-			return get_option( 'validator_options', array(
-				'title_validate' => '',
+			$validate_ints = function( $val ) {
+				return absint( sanitize_key( $val ) );
+			};
+			$validator_options = get_option( 'validator_options', array(
+				'title_validate' => 0,
 				'title_min' => 20,
 				'title_limit' => 80,
-				'excerpt_validate' => '',
+				'excerpt_validate' => 0,
 				'excerpt_min' => 40,
 				'excerpt_limit' => 140,
-				'featured_validate' => '',
+				'featured_validate' => 0,
 				'featured_min' => 1000,
-				'bio_validate' => '',
+				'bio_validate' => 0,
 				'bio_min' => 140,
 			) );
+
+			return array_map( $validate_ints, $validator_options );
 		}
 
 		/**
@@ -776,7 +789,7 @@ if ( ! class_exists( 'Wired_Validator' ) ) {
 		 */
 		private function valid_date( $post_id ) {
 			$validator_options = $this->get_validator_options();
-			$on_date = $validator_options && array_key_exists( 'valid_date', $validator_options ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
+			$on_date = $validator_options && isset( $validator_options[ 'valid_date' ] ) ? intval( $validator_options[ 'valid_date' ] ) : -1;
 			$post_date = get_the_date( 'U', $post_id );
 
 			return $post_date >= $on_date;
